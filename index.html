@@ -1,0 +1,2509 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angga Portfolio</title>
+    <!-- Memuat Tailwind CSS untuk styling modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Import Font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        /* Variabel CSS */
+        :root {
+            --primary-dark: #0a0a0a;
+            --primary-light: #111111;
+            --text-light: #f5f5f5;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Reset dan Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Spline Viewer */
+        spline-viewer {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        /* Main Container - FIXED untuk mencegah teks bergerak */
+        .main-container {
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        /* Content Wrapper untuk scrollable content */
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+            margin-top: 100vh;
+            background: var(--primary-dark);
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1.5rem 2rem;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid var(--border-color);
+            width: 100%;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 1rem 2rem;
+            backdrop-filter: blur(30px);
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .navbar-brand h1 {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+        
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1001;
+            width: 30px;
+            height: 30px;
+            justify-content: center;
+            align-items: flex-end;
+            transition: all 0.3s ease;
+        }
+        
+        .bar {
+            width: 25px;
+            height: 1px;
+            background-color: var(--text-light);
+            margin: 3px 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hamburger.active .bar:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+            width: 25px;
+        }
+        
+        .hamburger.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active .bar:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+            width: 25px;
+        }
+        
+        /* ===== Language Switcher Styles ===== */
+        .language-switcher {
+            position: relative;
+        }
+        
+        .language-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .language-btn:hover {
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .language-btn i:first-child {
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+        
+        .language-btn i:last-child {
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .language-switcher.active .language-btn i:last-child {
+            transform: rotate(180deg);
+        }
+        
+        .current-lang {
+            min-width: 25px;
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            padding: 0.5rem;
+            min-width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+        
+        .language-switcher.active .language-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .lang-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+            text-align: left;
+        }
+        
+        .lang-option:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+        }
+        
+        .lang-option.active {
+            color: var(--accent);
+        }
+        
+        .lang-option.active i {
+            display: inline-block !important;
+        }
+        
+        .lang-option i {
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+        
+        /* Nav Menu - SETENGAH LAYAR */
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -50%; /* Mulai dari -50% bukan -100% */
+            width: 50%; /* Setengah lebar layar */
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(30px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding-left: 4rem;
+            transition: right 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            border-left: 1px solid var(--border-color);
+        }
+        
+        .nav-menu.active {
+            right: 0;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 200;
+            margin: 1.5rem 0;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-light);
+            padding-left: 1rem;
+        }
+        
+        .nav-link:hover::before {
+            width: 1rem;
+        }
+        
+        /* Hero Section Styles */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.1), transparent 30%, transparent 70%, rgba(10, 10, 10, 0.3));
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            pointer-events: none;
+        }
+        
+        .hero-subtitle {
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            text-transform: uppercase;
+        }
+        
+        .hero-title {
+            font-size: clamp(3.5rem, 10vw, 8rem);
+            font-weight: 200;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            text-align: center;
+            line-height: 0.9;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .hero-title span {
+            display: block;
+            font-weight: 100;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .hero-cta {
+            opacity: 0;
+            animation: fadeInUp 0.8s 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            pointer-events: auto;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .cta-button:hover {
+            border-color: var(--accent);
+            padding-right: 3rem;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+        
+        .cta-button:hover::before {
+            opacity: 0.1;
+        }
+        
+        .cta-button span {
+            margin-left: 0.75rem;
+            transition: transform 0.4s ease;
+        }
+        
+        .cta-button:hover span {
+            transform: translateX(5px);
+        }
+        
+        .corner-text {
+            position: absolute;
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.5);
+            z-index: 30;
+            text-transform: uppercase;
+        }
+        
+        .corner-left {
+            top: 2rem;
+            left: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .corner-right {
+            bottom: 2rem;
+            right: 2rem;
+            text-align: right;
+            opacity: 0;
+            animation: fadeIn 1s 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            opacity: 0;
+            animation: fadeIn 1s 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Section Common Styles */
+        section {
+            padding: 8rem 2rem;
+            position: relative;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+        
+        .section-tag {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 200;
+            letter-spacing: 0.05em;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1.125rem;
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* About Section - DIPERBAIKI dengan foto border & deskripsi kepribadian */
+        .about-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+        
+        /* Foto dengan border premium */
+        .profile-photo-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        
+        .profile-photo {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(100%) contrast(110%);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        }
+        
+        .profile-photo:hover {
+            filter: grayscale(0%) contrast(100%);
+            transform: scale(1.02);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        /* Container deskripsi kepribadian */
+        .personality-description {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            padding: 2.5rem;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .personality-description::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+        }
+        
+        .personality-title {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .personality-title i {
+            font-size: 1.25rem;
+        }
+        
+        .personality-text {
+            font-size: 1.125rem;
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        
+        .personality-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .trait-item {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            color: var(--accent-light);
+        }
+        
+        .about-text h3 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+            color: var(--text-light);
+        }
+        
+        .about-text p {
+            font-size: 1.125rem;
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+        
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 200;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        
+        /* ===== Skills Section Styles ===== */
+        .skills-section {
+            background: var(--primary-dark);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .skills-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .skills-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+        
+        .skill-category {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            padding: 2.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .skill-category:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .category-icon i {
+            font-size: 1.25rem;
+            color: var(--accent);
+        }
+        
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+        }
+        
+        .skills-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .skill-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .skill-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .skill-icon {
+            font-size: 1.25rem;
+            color: var(--accent-light);
+            width: 30px;
+        }
+        
+        .skill-name {
+            flex: 1;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+        }
+        
+        .skill-level {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 50px;
+        }
+        
+        .skill-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            width: 0;
+            border-radius: 2px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Projects Section */
+        .projects-section {
+            background: var(--primary-light);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .projects-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+        
+        .project-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .project-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .project-image {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+        
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(110%);
+            transition: all 0.6s ease;
+        }
+        
+        .project-card:hover .project-image img {
+            filter: grayscale(0%) contrast(100%);
+            transform: scale(1.05);
+        }
+        
+        .project-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10, 10, 10, 0.9), transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .project-card:hover .project-overlay {
+            opacity: 1;
+        }
+        
+        .project-info {
+            padding: 2rem;
+        }
+        
+        .project-category {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .project-description {
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        
+        .project-link span {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .project-link:hover span {
+            transform: translateX(5px);
+        }
+        
+        /* Studio Section */
+        .studio-section {
+            background: var(--primary-light);
+        }
+        
+        .studio-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .studio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .studio-card {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .studio-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        
+        .studio-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        
+        .studio-card h4 {
+            font-size: 1.25rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .studio-card p {
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+        
+        /* Contact Section - STATIS di paling akhir */
+        .contact-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 4rem;
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: start;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+            color: var(--text-light);
+        }
+        
+        .contact-text {
+            font-size: 1.125rem;
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+        
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        
+        .social-link i {
+            font-size: 1.25rem;
+            width: 40px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            color: var(--text-light);
+            transform: translateX(5px);
+        }
+        
+        .social-link:hover i {
+            color: var(--accent);
+        }
+        
+        /* Contact Details - Statis */
+        .contact-details {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            padding: 3rem;
+            height: 100%;
+        }
+        
+        .detail-item {
+            margin-bottom: 2.5rem;
+        }
+        
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-label {
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-value {
+            font-size: 1.125rem;
+            font-weight: 300;
+            color: var(--text-light);
+        }
+        
+        .availability {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .availability-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 2rem;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .footer-link {
+            font-size: 0.875rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--text-light);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-copyright {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .about-content,
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+            
+            .skills-categories,
+            .projects-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+            
+            /* Nav menu setengah layar untuk tablet */
+            .nav-menu {
+                width: 50%;
+                right: -50%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            section {
+                padding: 6rem 1.5rem;
+            }
+            
+            .navbar {
+                padding: 1rem 1.5rem;
+            }
+            
+            .navbar-actions {
+                gap: 1rem;
+            }
+            
+            .language-btn span {
+                display: none;
+            }
+            
+            .language-btn {
+                padding: 0.5rem;
+                min-width: 40px;
+                justify-content: center;
+            }
+            
+            .language-dropdown {
+                min-width: 120px;
+                right: -10px;
+            }
+            
+            /* Nav menu setengah layar untuk mobile */
+            .nav-menu {
+                width: 70%; /* Sedikit lebih lebar di mobile */
+                padding-left: 2rem;
+                right: -70%;
+            }
+            
+            .nav-link {
+                font-size: 1.25rem;
+            }
+            
+            .hero-title {
+                font-size: clamp(2.5rem, 8vw, 5rem);
+            }
+            
+            .skills-categories {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .skill-category {
+                padding: 1.5rem;
+            }
+            
+            .about-stats {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: clamp(2rem, 6vw, 3.5rem);
+            }
+            
+            .section-title {
+                font-size: clamp(2rem, 4vw, 2.5rem);
+            }
+            
+            .skills-section {
+                padding: 4rem 1rem;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+            
+            .category-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .studio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Nav menu full untuk mobile kecil */
+            .nav-menu {
+                width: 85%;
+                right: -85%;
+            }
+        }
+        
+        /* Untuk semua mobile */
+        @media (max-width: 768px) {
+            .hero-subtitle {
+                font-size: 0.75rem;
+                letter-spacing: 0.2em;
+                margin-bottom: 1rem;
+                text-align: center;
+                padding: 0 1.5rem;
+                line-height: 1.4;
+                max-width: 90%;
+                margin-left: auto;
+                margin-right: auto;
+                word-wrap: break-word;
+            }
+        }
+        
+        /* Untuk mobile sangat kecil */
+        @media (max-width: 480px) {
+            .hero-subtitle {
+                font-size: 0.65rem;
+                letter-spacing: 0.15em;
+                padding: 0 1rem;
+                max-width: 100%;
+            }
+        }
+    </style>
+    <!-- Script Spline Viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.4/build/spline-viewer.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1>ANGGA</h1>
+            </div>
+            <div class="navbar-actions">
+                <div class="language-switcher">
+                    <button class="language-btn" id="language-btn">
+                        <i class="fas fa-globe"></i>
+                        <span class="current-lang">EN</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="language-dropdown" id="language-dropdown">
+                        <button class="lang-option active" data-lang="en">
+                            <span>English</span>
+                            <i class="fas fa-check" style="display: inline-block;"></i>
+                        </button>
+                        <button class="lang-option" data-lang="id">
+                            <span>Indonesia</span>
+                            <i class="fas fa-check" style="display: none;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Nav Menu - SETENGAH LAYAR -->
+    <div class="nav-menu" id="nav-menu">
+        <a href="#" class="nav-link">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#studio" class="nav-link">Studio</a>
+        <a href="#contact" class="nav-link">Contact</a>
+    </div>
+
+    <!-- Fixed Hero Section (Tidak ikut scroll) -->
+    <div class="main-container">
+        <spline-viewer url="https://prod.spline.design/v6gSws2Fmad9nqUC/scene.splinecode"></spline-viewer>
+        
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+            <p class="hero-subtitle">Senior Creative Frontend Engineer</p>
+            <h1 class="hero-title">
+                Crafting Digital<br>
+                <span>Experiences</span>
+            </h1>
+            <div class="hero-cta">
+                <a href="#about" class="cta-button">
+                    Explore Works
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="corner-text corner-left">
+            Angga Portfolio
+        </div>
+        
+        <div class="corner-text corner-right">
+            Est. 2025<br>
+            Based in Makassar
+        </div>
+        
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+        </div>
+    </div>
+
+    <!-- Scrollable Content (Dimulai setelah hero section) -->
+    <div class="content-wrapper">
+        
+        <!-- About Section dengan Foto Border & Deskripsi Kepribadian -->
+        <section id="about">
+            <div class="about-content">
+                <div class="profile-photo-container">
+                    <img src="images/profile.jpg" 
+                         alt="Angga Profile" 
+                         class="profile-photo">
+                </div>
+                <div class="about-text">
+                    <span class="section-tag">About Me</span>
+                    <h3>Creating Digital Experiences That Inspire</h3>
+                    <p>
+                        As a passionate web developer and designer, I specialize in creating innovative, user-friendly digital solutions. With over 8 years of experience, I've helped numerous brands transform their vision into compelling digital experiences.
+                    </p>
+                    <p>
+                        My approach combines technical expertise with artistic sensibility, ensuring every project not only functions flawlessly but also delivers an engaging visual experience.
+                    </p>
+                    
+                    <!-- Deskripsi Kepribadian -->
+                    <div class="personality-description">
+                        <div class="personality-title">
+                            <i class="fas fa-heart"></i>
+                            Personal Philosophy
+                        </div>
+                        <p class="personality-text">
+                            "I believe in the power of minimalism and purposeful design. Every pixel, every line of code should serve a purpose. My work is driven by a passion for creating digital experiences that are not only beautiful but also intuitive and accessible."
+                        </p>
+                        
+                        <div class="personality-traits">
+                            <span class="trait-item">Detail-Oriented</span>
+                            <span class="trait-item">Creative Problem Solver</span>
+                            <span class="trait-item">Continuous Learner</span>
+                            <span class="trait-item">User-Centric</span>
+                            <span class="trait-item">Collaborative</span>
+                        </div>
+                    </div>
+                    
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">10+</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3+</div>
+                            <div class="stat-label">Years Experience</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">30+</div>
+                            <div class="stat-label">Happy Clients</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="skills-section">
+            <div class="section-header">
+                <span class="section-tag">Technical Expertise</span>
+                <h2 class="section-title">Skills & Technologies</h2>
+                <p class="section-subtitle">
+                    A comprehensive overview of my technical skills and proficiency across various programming languages and technologies.
+                </p>
+            </div>
+            
+            <div class="skills-container">
+                <div class="skills-categories">
+                    <!-- Category 1: Programming Languages -->
+                    <div class="skill-category">
+                        <div class="category-header">
+                            <div class="category-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3 class="category-title">Programming Languages</h3>
+                        </div>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-html5"></i>
+                                    </div>
+                                    <span class="skill-name">HTML & CSS</span>
+                                    <span class="skill-level">Advanced</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="95"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-js-square"></i>
+                                    </div>
+                                    <span class="skill-name">JavaScript</span>
+                                    <span class="skill-level">Expert</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="95"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-php"></i>
+                                    </div>
+                                    <span class="skill-name">PHP</span>
+                                    <span class="skill-level">Advanced</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="85"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-python"></i>
+                                    </div>
+                                    <span class="skill-name">Python</span>
+                                    <span class="skill-level">Intermediate</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="75"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Category 2: Web Technologies -->
+                    <div class="skill-category">
+                        <div class="category-header">
+                            <div class="category-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <h3 class="category-title">Web Technologies</h3>
+                        </div>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-react"></i>
+                                    </div>
+                                    <span class="skill-name">React</span>
+                                    <span class="skill-level">Expert</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="60"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-vuejs"></i>
+                                    </div>
+                                    <span class="skill-name">Vue.js</span>
+                                    <span class="skill-level">Advanced</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="55"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-node-js"></i>
+                                    </div>
+                                    <span class="skill-name">Node.js</span>
+                                    <span class="skill-level">Advanced</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="55"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-laravel"></i>
+                                    </div>
+                                    <span class="skill-name">Laravel</span>
+                                    <span class="skill-level">Intermediate</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="90"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Category 3: Tools & Others -->
+                    <div class="skill-category">
+                        <div class="category-header">
+                            <div class="category-icon">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <h3 class="category-title">Tools & Others</h3>
+                        </div>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-git-alt"></i>
+                                    </div>
+                                    <span class="skill-name">Git</span>
+                                    <span class="skill-level">Expert</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="60"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <span class="skill-name">MySQL</span>
+                                    <span class="skill-level">Advanced</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="90"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fab fa-docker"></i>
+                                    </div>
+                                    <span class="skill-name">Docker</span>
+                                    <span class="skill-level">Intermediate</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="55"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <div class="skill-icon">
+                                        <i class="fas fa-cloud"></i>
+                                    </div>
+                                    <span class="skill-name">AWS</span>
+                                    <span class="skill-level">Intermediate</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="progress-bar" data-level="40"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="projects-section">
+            <div class="section-header">
+                <span class="section-tag">Selected Works</span>
+                <h2 class="section-title">Recent Projects</h2>
+                <p class="section-subtitle">
+                    A selection of my recent work showcasing expertise in modern web development and design.
+                </p>
+            </div>
+            
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" alt="Dashboard Project">
+                        <div class="project-overlay">
+                            <a href="#" class="cta-button">View Case Study</a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <span class="project-category">Web Application</span>
+                        <h3 class="project-title">Analytics Dashboard</h3>
+                        <p class="project-description">
+                            A comprehensive analytics dashboard with real-time data visualization and intuitive user interface.
+                        </p>
+                        <a href="https://swipestoree.vercel.app" class="project-link">
+                            View Project
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" alt="E-commerce Project">
+                        <div class="project-overlay">
+                            <a href="#" class="cta-button">View Case Study</a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <span class="project-category">Property</span>
+                        <h3 class="project-title">Modern Property</h3>
+                        <p class="project-description">
+                            A sleek e-commerce platform with seamless user experience and responsive design.
+                        </p>
+                        <a href="https://muhanugrahasharyputra.github.io/BukitPanaikangResidence/" class="project-link">
+                            View Project
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" alt="Mobile App Project">
+                        <div class="project-overlay">
+                            <a href="https://muhanugrahasharyputra.github.io/ForNayaee/" class="cta-button">View Case Study</a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <span class="project-category">Mobile App</span>
+                        <h3 class="project-title">Fitness Tracker App</h3>
+                        <p class="project-description">
+                            A mobile application for fitness tracking with clean UI and smooth animations.
+                        </p>
+                        <a href="#" class="project-link">
+                            View Project
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Studio Section -->
+        <section id="studio" class="studio-section">
+            <div class="section-header">
+                <span class="section-tag">My Studio</span>
+                <h2 class="section-title">Creative Process</h2>
+                <p class="section-subtitle">
+                    How I approach each project from concept to completion.
+                </p>
+            </div>
+            
+            <div class="studio-content">
+                <div class="studio-grid">
+                    <div class="studio-card">
+                        <div class="studio-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h4>Concept & Strategy</h4>
+                        <p>
+                            Understanding your vision and defining project goals through research and strategy sessions.
+                        </p>
+                    </div>
+                    
+                    <div class="studio-card">
+                        <div class="studio-icon">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                        <h4>Design & Prototyping</h4>
+                        <p>
+                            Creating wireframes and prototypes to visualize the user experience and interface design.
+                        </p>
+                    </div>
+                    
+                    <div class="studio-card">
+                        <div class="studio-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h4>Development</h4>
+                        <p>
+                            Building responsive, performant websites and applications using modern technologies.
+                        </p>
+                    </div>
+                    
+                    <div class="studio-card">
+                        <div class="studio-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h4>Launch & Optimize</h4>
+                        <p>
+                            Deploying projects and continuously optimizing for performance and user experience.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section - STATIS di paling akhir -->
+        <section id="contact">
+            <div class="section-header">
+                <span class="section-tag">Get In Touch</span>
+                <h2 class="section-title">Let's Work Together</h2>
+                <p class="section-subtitle">
+                    Interested in collaborating on a project? Feel free to reach out through any of these channels.
+                </p>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p class="contact-text">
+                        Have a project in mind? Let's discuss how we can bring your ideas to life. I'm always open to new challenges and opportunities for collaboration.
+                    </p>
+                    
+                    <div class="social-links">
+                        <a href="mailto:anugrahasharyabubakar@gmail.com" class="social-link">
+                            <i class="fas fa-envelope"></i>
+                            anugrahasharyabubakar@gmail.com
+                        </a>
+                        <a href="https://wa.me/6285398009506" target="_blank" class="social-link">
+                            <i class="fab fa-whatsapp"></i>
+                            WhatsApp
+                        </a>
+                        <a href="https://tiktok.com/@anggaashry" target="_blank" class="social-link">
+                            <i class="fab fa-tiktok"></i>
+                            TikTok
+                        </a>
+                        <a href="https://github.com/MUHANUGRAHASHARYPUTRA" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                            GitHub
+                        </a>
+                    
+                        <a href="https://instagram.com/anggaashry" target="_blank" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                            Instagram
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Contact Details Statis -->
+                <div class="contact-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Location</div>
+                        <div class="detail-value">Makassar, Indonesia</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Availability</div>
+                        <div class="detail-value">
+                            Open for collaborations
+                            <div class="availability">
+                                <span class="availability-dot"></span>
+                                Available
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Response Time</div>
+                        <div class="detail-value">Within 24 hours</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Working Hours</div>
+                        <div class="detail-value">Mon-Fri, 9AM-6PM WITA</div>
+                    </div>
+                </div>
+            </div>
+        
+
+        
+            <div class="footer-bottom">
+                <p class="footer-copyright">
+                    © 2025 Angga Portfolio. All rights reserved.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Inisialisasi ketika DOM selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('nav-menu');
+            const navbar = document.querySelector('.navbar');
+            const projectCards = document.querySelectorAll('.project-card');
+            const ctaButton = document.querySelector('.cta-button');
+    
+            // Hamburger Menu
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+    
+            // Close menu when clicking on a link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+    
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!hamburger.contains(event.target) && !navMenu.contains(event.target)) {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+    
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+    
+            // Smooth scroll for CTA button
+            if (ctaButton) {
+                ctaButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const aboutSection = document.querySelector('#about');
+                    aboutSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            }
+    
+            // Project cards animation on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+    
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+    
+            projectCards.forEach(card => {
+                observer.observe(card);
+            });
+    
+            // Scroll indicator animation
+            const scrollIndicator = document.querySelector('.scroll-line');
+            if (scrollIndicator) {
+                let position = 0;
+                let direction = 1;
+                
+                function animateScrollLine() {
+                    position += direction * 0.5;
+                    
+                    if (position >= 60) {
+                        direction = -1;
+                        position = 60;
+                    } else if (position <= 0) {
+                        direction = 1;
+                        position = 0;
+                    }
+                    
+                    scrollIndicator.style.height = `${60 - position}px`;
+                    scrollIndicator.style.background = `linear-gradient(to bottom, var(--accent) ${position}%, transparent ${position + 20}%)`;
+                    
+                    requestAnimationFrame(animateScrollLine);
+                }
+                
+                animateScrollLine();
+            }
+    
+            // Spline viewer loaded event
+            const splineViewer = document.querySelector('spline-viewer');
+            if (splineViewer) {
+                splineViewer.addEventListener('load', function() {
+                    console.log('Spline viewer loaded successfully');
+                });
+            }
+    
+            // Language Switcher
+            const languageBtn = document.getElementById('language-btn');
+            const languageDropdown = document.getElementById('language-dropdown');
+            const langOptions = document.querySelectorAll('.lang-option');
+            const currentLangSpan = document.querySelector('.current-lang');
+            
+            if (languageBtn) {
+                // Toggle dropdown
+                languageBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    languageBtn.parentElement.classList.toggle('active');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!languageBtn.contains(event.target) && !languageDropdown.contains(event.target)) {
+                        languageBtn.parentElement.classList.remove('active');
+                    }
+                });
+                
+                // Handle language selection
+                langOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const selectedLang = this.dataset.lang;
+                        
+                        // Update active state
+                        langOptions.forEach(opt => {
+                            opt.classList.remove('active');
+                            opt.querySelector('i').style.display = 'none';
+                        });
+                        
+                        this.classList.add('active');
+                        this.querySelector('i').style.display = 'inline-block';
+                        
+                        if (currentLangSpan) {
+                            currentLangSpan.textContent = selectedLang.toUpperCase();
+                        }
+                        
+                        // Change language
+                        changeLanguage(selectedLang);
+                        
+                        // Close dropdown
+                        languageBtn.parentElement.classList.remove('active');
+                        
+                        // Smooth scroll to top jika sedang di section tertentu
+                        if (window.location.hash && window.location.hash !== '#') {
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // Skills Progress Animation
+            const progressBars = document.querySelectorAll('.progress-bar');
+            
+            if (progressBars.length > 0) {
+                const progressObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const progressBar = entry.target;
+                            const level = progressBar.dataset.level;
+                            
+                            // Animate progress bar
+                            setTimeout(() => {
+                                progressBar.style.width = `${level}%`;
+                            }, 300);
+                            
+                            progressObserver.unobserve(progressBar);
+                        }
+                    });
+                }, {
+                    threshold: 0.5,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+                
+                progressBars.forEach(bar => {
+                    progressObserver.observe(bar);
+                });
+            }
+            
+            // Language Translation Data
+            const translations = {
+                en: {
+                    // Navigation
+                    navHome: "Home",
+                    navAbout: "About",
+                    navSkills: "Skills",
+                    navProjects: "Projects",
+                    navStudio: "Studio",
+                    navContact: "Contact",
+                    
+                    // Hero Section
+                    heroSubtitle: "Senior Creative Frontend Engineer",
+                    heroTitle1: "Crafting Digital",
+                    heroTitle2: "Experiences",
+                    heroCta: "Explore Works",
+                    
+                    // About Section
+                    aboutTag: "About Me",
+                    aboutTitle: "Creating Digital Experiences That Inspire",
+                    aboutText1: "As a passionate web developer and designer, I specialize in creating innovative, user-friendly digital solutions. With over 8 years of experience, I've helped numerous brands transform their vision into compelling digital experiences.",
+                    aboutText2: "My approach combines technical expertise with artistic sensibility, ensuring every project not only functions flawlessly but also delivers an engaging visual experience.",
+                    personalityTitle: "Personal Philosophy",
+                    personalityText: "\"I believe in the power of minimalism and purposeful design. Every pixel, every line of code should serve a purpose. My work is driven by a passion for creating digital experiences that are not only beautiful but also intuitive and accessible.\"",
+                    trait1: "Detail-Oriented",
+                    trait2: "Creative Problem Solver",
+                    trait3: "Continuous Learner",
+                    trait4: "User-Centric",
+                    trait5: "Collaborative",
+                    statsProjects: "Projects",
+                    statsExperience: "Years Experience",
+                    statsClients: "Happy Clients",
+                    
+                    // Skills Section
+                    skillsTag: "Technical Expertise",
+                    skillsTitle: "Skills & Technologies",
+                    skillsSubtitle: "A comprehensive overview of my technical skills and proficiency across various programming languages and technologies.",
+                    categoryLanguages: "Programming Languages",
+                    categoryWeb: "Web Technologies",
+                    categoryTools: "Tools & Others",
+                    
+                    // Projects Section
+                    projectsTag: "Selected Works",
+                    projectsTitle: "Recent Projects",
+                    projectsSubtitle: "A selection of my recent work showcasing expertise in modern web development and design.",
+                    projectCategory1: "Web Application",
+                    projectTitle1: "Simulation E-commerce Platform",
+                    projectDesc1: "E-commerce simulation platform for risk-free online business practice and learning.",
+                    projectCategory2: "Property",
+                    projectTitle2: "Modern Property",
+                    projectDesc2: "Modern Real Estate Platform with Seamless User Experience.",
+                    projectCategory3: "Romantic",
+                    projectTitle3: "LoveSpace",
+                    projectDesc3: "Digital Love Expression Portal.",
+                    projectLink: "View Project",
+                    
+                    // Studio Section
+                    studioTag: "My Studio",
+                    studioTitle: "Creative Process",
+                    studioSubtitle: "How I approach each project from concept to completion.",
+                    studioCard1Title: "Concept & Strategy",
+                    studioCard1Desc: "Understanding your vision and defining project goals through research and strategy sessions.",
+                    studioCard2Title: "Design & Prototyping",
+                    studioCard2Desc: "Creating wireframes and prototypes to visualize the user experience and interface design.",
+                    studioCard3Title: "Development",
+                    studioCard3Desc: "Building responsive, performant websites and applications using modern technologies.",
+                    studioCard4Title: "Launch & Optimize",
+                    studioCard4Desc: "Deploying projects and continuously optimizing for performance and user experience.",
+                    
+                    // Contact Section
+                    contactTag: "Get In Touch",
+                    contactTitle: "Let's Work Together",
+                    contactSubtitle: "Interested in collaborating on a project? Feel free to reach out through any of these channels.",
+                    contactInfoTitle: "Contact Information",
+                    contactText: "Have a project in mind? Let's discuss how we can bring your ideas to life. I'm always open to new challenges and opportunities for collaboration.",
+                    locationLabel: "Location",
+                    locationValue: "Makassar, Indonesia",
+                    availabilityLabel: "Availability",
+                    availabilityValue: "Open for collaborations",
+                    availableText: "Available",
+                    responseLabel: "Response Time",
+                    responseValue: "Within 24 hours",
+                    hoursLabel: "Working Hours",
+                    hoursValue: "Mon-Fri, 9AM-6PM WITA",
+                    
+                    // Footer
+                    footerLogo: "ANGGAPortfolio",
+                    footerCopyright: "© 2025 Angga Portfolio. All rights reserved."
+                },
+                id: {
+                    // Navigation
+                    navHome: "Beranda",
+                    navAbout: "Tentang",
+                    navSkills: "Keahlian",
+                    navProjects: "Proyek",
+                    navStudio: "Studio",
+                    navContact: "Kontak",
+                    
+                    // Hero Section
+                    heroSubtitle: "Senior Creative Frontend Engineer",
+                    heroTitle1: "Membuat Pengalaman",
+                    heroTitle2: "Digital",
+                    heroCta: "Lihat Karya",
+                    
+                    // About Section
+                    aboutTag: "Tentang Saya",
+                    aboutTitle: "Membuat Pengalaman Digital yang Menginspirasi",
+                    aboutText1: "Sebagai web developer dan desainer yang penuh semangat, saya mengkhususkan diri dalam menciptakan solusi digital yang inovatif dan ramah pengguna. Dengan pengalaman lebih dari 8 tahun, saya telah membantu banyak merek mengubah visi mereka menjadi pengalaman digital yang menarik.",
+                    aboutText2: "Pendekatan saya menggabungkan keahlian teknis dengan kepekaan artistik, memastikan setiap proyek tidak hanya berfungsi dengan sempurna tetapi juga memberikan pengalaman visual yang menarik.",
+                    personalityTitle: "Filosofi Pribadi",
+                    personalityText: "\"Saya percaya pada kekuatan minimalisme dan desain yang bertujuan. Setiap piksel, setiap baris kode harus memiliki tujuan. Karya saya didorong oleh hasrat untuk menciptakan pengalaman digital yang tidak hanya indah tetapi juga intuitif dan mudah diakses.\"",
+                    trait1: "Detail-Oriented",
+                    trait2: "Pemecah Masalah Kreatif",
+                    trait3: "Pembelajar Kontinu",
+                    trait4: "Berfokus pada Pengguna",
+                    trait5: "Kolaboratif",
+                    statsProjects: "Proyek",
+                    statsExperience: "Tahun Pengalaman",
+                    statsClients: "Klien Bahagia",
+                    
+                    // Skills Section
+                    skillsTag: "Keahlian Teknis",
+                    skillsTitle: "Keterampilan & Teknologi",
+                    skillsSubtitle: "Ikhtisar komprehensif tentang keterampilan teknis dan kemahiran saya di berbagai bahasa pemrograman dan teknologi.",
+                    categoryLanguages: "Bahasa Pemrograman",
+                    categoryWeb: "Teknologi Web",
+                    categoryTools: "Alat & Lainnya",
+                    
+                    // Projects Section
+                    projectsTag: "Karya Terpilih",
+                    projectsTitle: "Proyek Terbaru",
+                    projectsSubtitle: "Pilihan dari karya terbaru saya yang menunjukkan keahlian dalam pengembangan dan desain web modern.",
+                    projectCategory1: "Aplikasi Web",
+                    projectTitle1: "Platform E-commerce Simulasi",
+                    projectDesc1: "Platform simulasi e-commerce untuk praktik dan pembelajaran bisnis online tanpa risiko.",
+                    projectCategory2: "Properti",
+                    projectTitle2: "Properti Modern",
+                    projectDesc2: "Platform Real Estat Modern dengan Pengalaman Pengguna yang Lancar",
+                    projectCategory3: "Romantis",
+                    projectTitle3: "LoveSpace",
+                    projectDesc3: "Portal Ekspresi Cinta Digital",
+                    projectLink: "Lihat Proyek",
+                    
+                    // Studio Section
+                    studioTag: "Studio Saya",
+                    studioTitle: "Proses Kreatif",
+                    studioSubtitle: "Bagaimana saya mendekati setiap proyek dari konsep hingga penyelesaian.",
+                    studioCard1Title: "Konsep & Strategi",
+                    studioCard1Desc: "Memahami visi Anda dan menentukan tujuan proyek melalui penelitian dan sesi strategi.",
+                    studioCard2Title: "Desain & Prototipe",
+                    studioCard2Desc: "Membuat wireframe dan prototipe untuk memvisualisasikan pengalaman pengguna dan desain antarmuka.",
+                    studioCard3Title: "Pengembangan",
+                    studioCard3Desc: "Membangun website dan aplikasi responsif dan performa tinggi menggunakan teknologi modern.",
+                    studioCard4Title: "Peluncuran & Optimasi",
+                    studioCard4Desc: "Menerapkan proyek dan terus-menerus mengoptimalkan performa dan pengalaman pengguna.",
+                    
+                    // Contact Section
+                    contactTag: "Hubungi Saya",
+                    contactTitle: "Mari Bekerja Sama",
+                    contactSubtitle: "Tertarik berkolaborasi dalam proyek? Jangan ragu untuk menghubungi melalui saluran-saluran ini.",
+                    contactInfoTitle: "Informasi Kontak",
+                    contactText: "Punya proyek dalam pikiran? Mari diskusikan bagaimana kita bisa mewujudkan ide-ide Anda. Saya selalu terbuka untuk tantangan baru dan peluang kolaborasi.",
+                    locationLabel: "Lokasi",
+                    locationValue: "Makassar, Indonesia",
+                    availabilityLabel: "Ketersediaan",
+                    availabilityValue: "Terbuka untuk kolaborasi",
+                    availableText: "Tersedia",
+                    responseLabel: "Waktu Respon",
+                    responseValue: "Dalam 24 jam",
+                    hoursLabel: "Jam Kerja",
+                    hoursValue: "Sen-Jum, 09.00-18.00 WITA",
+                    
+                    // Footer
+                    footerLogo: "ANGGAPortfolio",
+                    footerCopyright: "© 2025 Portfolio Angga. Hak cipta dilindungi."
+                }
+            };
+            
+            // Function to change language
+            function changeLanguage(lang) {
+                const t = translations[lang];
+                
+                if (!t) return;
+                
+                // Save language preference to localStorage
+                localStorage.setItem('preferredLanguage', lang);
+                
+                // Update navigation
+                document.querySelectorAll('.nav-link').forEach((link, index) => {
+                    const keys = ['navHome', 'navAbout', 'navSkills', 'navProjects', 'navStudio', 'navContact'];
+                    if (keys[index]) {
+                        link.textContent = t[keys[index]];
+                    }
+                });
+                
+                // Update hero section (jika ada di halaman)
+                const heroSubtitle = document.querySelector('.hero-subtitle');
+                const heroTitle = document.querySelector('.hero-title');
+                const ctaButton = document.querySelector('.hero-cta .cta-button');
+                
+                if (heroSubtitle) heroSubtitle.textContent = t.heroSubtitle;
+                if (heroTitle) {
+                    const lines = heroTitle.innerHTML.split('<br>');
+                    lines[0] = t.heroTitle1;
+                    lines[1] = `<span>${t.heroTitle2}</span>`;
+                    heroTitle.innerHTML = lines.join('<br>');
+                }
+                if (ctaButton) ctaButton.innerHTML = `${t.heroCta} <span>→</span>`;
+                
+                // Update corner text (jika ada)
+                const cornerLeft = document.querySelector('.corner-left');
+                if (cornerLeft) {
+                    cornerLeft.textContent = t.footerLogo;
+                }
+                
+                // Update about section (jika ada di halaman)
+                const aboutSection = document.querySelector('#about');
+                if (aboutSection) {
+                    const aboutTag = aboutSection.querySelector('.section-tag');
+                    const aboutTitle = aboutSection.querySelector('.about-text h3');
+                    const aboutParagraphs = aboutSection.querySelectorAll('.about-text p');
+                    
+                    if (aboutTag) aboutTag.textContent = t.aboutTag;
+                    if (aboutTitle) aboutTitle.textContent = t.aboutTitle;
+                    if (aboutParagraphs[0]) aboutParagraphs[0].textContent = t.aboutText1;
+                    if (aboutParagraphs[1]) aboutParagraphs[1].textContent = t.aboutText2;
+                    
+                    const personalityTitle = aboutSection.querySelector('.personality-title');
+                    if (personalityTitle) {
+                        personalityTitle.innerHTML = `<i class="fas fa-heart"></i> ${t.personalityTitle}`;
+                    }
+                    
+                    const personalityText = aboutSection.querySelector('.personality-text');
+                    if (personalityText) {
+                        personalityText.textContent = t.personalityText;
+                    }
+                    
+                    const traits = aboutSection.querySelectorAll('.trait-item');
+                    const traitKeys = ['trait1', 'trait2', 'trait3', 'trait4', 'trait5'];
+                    traits.forEach((trait, index) => {
+                        if (traitKeys[index]) {
+                            trait.textContent = t[traitKeys[index]];
+                        }
+                    });
+                    
+                    const statLabels = aboutSection.querySelectorAll('.stat-label');
+                    const statKeys = ['statsProjects', 'statsExperience', 'statsClients'];
+                    statLabels.forEach((label, index) => {
+                        if (statKeys[index]) {
+                            label.textContent = t[statKeys[index]];
+                        }
+                    });
+                }
+                
+                // Update skills section (jika ada di halaman)
+                const skillsSection = document.querySelector('#skills');
+                if (skillsSection) {
+                    const skillsTag = skillsSection.querySelector('.section-tag');
+                    const skillsTitle = skillsSection.querySelector('.section-title');
+                    const skillsSubtitle = skillsSection.querySelector('.section-subtitle');
+                    
+                    if (skillsTag) skillsTag.textContent = t.skillsTag;
+                    if (skillsTitle) skillsTitle.textContent = t.skillsTitle;
+                    if (skillsSubtitle) skillsSubtitle.textContent = t.skillsSubtitle;
+                    
+                    const categoryTitles = skillsSection.querySelectorAll('.category-title');
+                    const categoryKeys = ['categoryLanguages', 'categoryWeb', 'categoryTools'];
+                    categoryTitles.forEach((title, index) => {
+                        if (categoryKeys[index]) {
+                            title.textContent = t[categoryKeys[index]];
+                        }
+                    });
+                }
+                
+                // Update projects section (jika ada di halaman)
+                const projectsSection = document.querySelector('#projects');
+                if (projectsSection) {
+                    const projectsTag = projectsSection.querySelector('.section-tag');
+                    const projectsTitle = projectsSection.querySelector('.section-title');
+                    const projectsSubtitle = projectsSection.querySelector('.section-subtitle');
+                    
+                    if (projectsTag) projectsTag.textContent = t.projectsTag;
+                    if (projectsTitle) projectsTitle.textContent = t.projectsTitle;
+                    if (projectsSubtitle) projectsSubtitle.textContent = t.projectsSubtitle;
+                    
+                    const projectCategories = projectsSection.querySelectorAll('.project-category');
+                    const categoryKeys = ['projectCategory1', 'projectCategory2', 'projectCategory3'];
+                    projectCategories.forEach((category, index) => {
+                        if (categoryKeys[index]) {
+                            category.textContent = t[categoryKeys[index]];
+                        }
+                    });
+                    
+                    const projectTitles = projectsSection.querySelectorAll('.project-title');
+                    const titleKeys = ['projectTitle1', 'projectTitle2', 'projectTitle3'];
+                    projectTitles.forEach((title, index) => {
+                        if (titleKeys[index]) {
+                            title.textContent = t[titleKeys[index]];
+                        }
+                    });
+                    
+                    const projectDescriptions = projectsSection.querySelectorAll('.project-description');
+                    const descKeys = ['projectDesc1', 'projectDesc2', 'projectDesc3'];
+                    projectDescriptions.forEach((desc, index) => {
+                        if (descKeys[index]) {
+                            desc.textContent = t[descKeys[index]];
+                        }
+                    });
+                    
+                    const projectLinks = projectsSection.querySelectorAll('.project-link');
+                    projectLinks.forEach(link => {
+                        link.innerHTML = `${t.projectLink} <span>→</span>`;
+                    });
+                    
+                    // Update CTA buttons in project overlays
+                    const projectCTAButtons = projectsSection.querySelectorAll('.project-overlay .cta-button');
+                    projectCTAButtons.forEach(button => {
+                        button.textContent = t.projectLink;
+                    });
+                }
+                
+                // Update studio section (jika ada di halaman)
+                const studioSection = document.querySelector('#studio');
+                if (studioSection) {
+                    const studioTag = studioSection.querySelector('.section-tag');
+                    const studioTitle = studioSection.querySelector('.section-title');
+                    const studioSubtitle = studioSection.querySelector('.section-subtitle');
+                    
+                    if (studioTag) studioTag.textContent = t.studioTag;
+                    if (studioTitle) studioTitle.textContent = t.studioTitle;
+                    if (studioSubtitle) studioSubtitle.textContent = t.studioSubtitle;
+                    
+                    const studioTitles = studioSection.querySelectorAll('.studio-card h4');
+                    const studioTitleKeys = ['studioCard1Title', 'studioCard2Title', 'studioCard3Title', 'studioCard4Title'];
+                    studioTitles.forEach((title, index) => {
+                        if (studioTitleKeys[index]) {
+                            title.textContent = t[studioTitleKeys[index]];
+                        }
+                    });
+                    
+                    const studioDescriptions = studioSection.querySelectorAll('.studio-card p');
+                    const studioDescKeys = ['studioCard1Desc', 'studioCard2Desc', 'studioCard3Desc', 'studioCard4Desc'];
+                    studioDescriptions.forEach((desc, index) => {
+                        if (studioDescKeys[index]) {
+                            desc.textContent = t[studioDescKeys[index]];
+                        }
+                    });
+                }
+                
+                // Update contact section (jika ada di halaman)
+                const contactSection = document.querySelector('#contact');
+                if (contactSection) {
+                    const contactTag = contactSection.querySelector('.section-tag');
+                    const contactTitle = contactSection.querySelector('.section-title');
+                    const contactSubtitle = contactSection.querySelector('.section-subtitle');
+                    
+                    if (contactTag) contactTag.textContent = t.contactTag;
+                    if (contactTitle) contactTitle.textContent = t.contactTitle;
+                    if (contactSubtitle) contactSubtitle.textContent = t.contactSubtitle;
+                    
+                    const contactInfoTitle = contactSection.querySelector('.contact-info h3');
+                    if (contactInfoTitle) {
+                        contactInfoTitle.textContent = t.contactInfoTitle;
+                    }
+                    
+                    const contactText = contactSection.querySelector('.contact-text');
+                    if (contactText) {
+                        contactText.textContent = t.contactText;
+                    }
+                    
+                    const detailLabels = contactSection.querySelectorAll('.detail-label');
+                    const detailLabelKeys = ['locationLabel', 'availabilityLabel', 'responseLabel', 'hoursLabel'];
+                    detailLabels.forEach((label, index) => {
+                        if (detailLabelKeys[index]) {
+                            label.textContent = t[detailLabelKeys[index]];
+                        }
+                    });
+                    
+                    const detailValues = contactSection.querySelectorAll('.detail-value');
+                    const detailValueKeys = ['locationValue', 'availabilityValue', 'responseValue', 'hoursValue'];
+                    detailValues.forEach((value, index) => {
+                        if (detailValueKeys[index]) {
+                            if (index === 1) {
+                                // For availability section
+                                const lines = value.innerHTML.split('<div');
+                                lines[0] = t[detailValueKeys[index]];
+                                value.innerHTML = lines.join('<div');
+                            } else {
+                                value.textContent = t[detailValueKeys[index]];
+                            }
+                        }
+                    });
+                    
+                    // Update availability text
+                    const availabilityText = contactSection.querySelector('.availability');
+                    if (availabilityText) {
+                        availabilityText.innerHTML = `<span class="availability-dot"></span> ${t.availableText}`;
+                    }
+                }
+                
+                // Update footer (selalu ada)
+                const footerLogo = document.querySelector('.footer-logo');
+                if (footerLogo) {
+                    footerLogo.textContent = t.footerLogo;
+                }
+                
+                // Update footer links
+                const footerLinks = document.querySelectorAll('.footer-link');
+                const footerLinkKeys = ['navAbout', 'navSkills', 'navProjects', 'navContact'];
+                footerLinks.forEach((link, index) => {
+                    if (footerLinkKeys[index]) {
+                        link.textContent = t[footerLinkKeys[index]];
+                    }
+                });
+                
+                const footerCopyright = document.querySelector('.footer-copyright');
+                if (footerCopyright) {
+                    footerCopyright.textContent = t.footerCopyright;
+                }
+                
+                // Update document title
+                document.title = lang === 'en' ? 'Angga Portfolio' : 'Portfolio Angga';
+            }
+            
+            // Load saved language preference
+            function loadLanguagePreference() {
+                // Check for saved language preference
+                const savedLang = localStorage.getItem('preferredLanguage');
+                const defaultLang = 'en';
+                const langToUse = savedLang || defaultLang;
+                
+                // Update UI based on saved language
+                const langOptions = document.querySelectorAll('.lang-option');
+                const currentLangSpan = document.querySelector('.current-lang');
+                
+                langOptions.forEach(option => {
+                    option.classList.remove('active');
+                    option.querySelector('i').style.display = 'none';
+                    
+                    if (option.dataset.lang === langToUse) {
+                        option.classList.add('active');
+                        option.querySelector('i').style.display = 'inline-block';
+                    }
+                });
+                
+                if (currentLangSpan) {
+                    currentLangSpan.textContent = langToUse.toUpperCase();
+                }
+                
+                // Apply translations
+                changeLanguage(langToUse);
+            }
+            
+            // Initialize language on page load
+            loadLanguagePreference();
+            
+            // Observer untuk update terjemahan saat scroll
+            const sectionObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+                        const currentLangElement = document.querySelector('.current-lang');
+                        
+                        if (currentLangElement) {
+                            const currentLang = currentLangElement.textContent.toLowerCase();
+                            
+                            if (savedLang !== currentLang) {
+                                // Update terjemahan jika bahasa berbeda
+                                loadLanguagePreference();
+                            }
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            // Observe semua sections
+            document.querySelectorAll('section').forEach(section => {
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+
+</body>
+</html>
